@@ -9,7 +9,7 @@ const CHATBOT_RESPONSES = [
     ["考試時間", "考試資訊：\n- 期中考：約學期第9周\n- 期末考：約學期第18周\n詳細安排請參考：\n<a href='https://www.cute.edu.tw/calendar.html' target='_blank'>校園行事曆</a>", "期中考,期末考,考試,考試時間,行事曆,考試範圍,考試規則"],
     ["學校設施", "校園設施包括：\n- 休閒活動中心：球館、游泳館、SPA池、蒸氣室\n- 圖書館：語言自學中心、視聽區\n詳情請參考：\n<a href='https://recruit.cute.edu.tw/university_exposition/campus_life/' target='_blank'>校園生活</a>", "設施,圖書館,體育館,運動,休閒,球館,游泳館,校園設施"],
     ["學雜費", "學雜費資訊：\n查詢與繳費請至：\n<a href='https://sub.cute.edu.tw/onlinePay/' target='_blank'>繳費專區</a>\n\n提供線上查詢繳費單、ATM繳費、銀行臨櫃繳費服務。\n如需就學貸款，請洽學生事務處。", "學雜費,學費,雜費,繳費,減免,貸款,低收入戶"],
-    ["畢業門檻", "畢業門檻：\n詳情：\n<a href='https://www.cute.edu.tw/~gec/intro/student.html' target='_blank'>學生專區</a>\n\n- 學分要求\n- 必修與通識課程\n- 實習要求\n- 外語學習成就評量", "畢業,畢業門檻,學分,必修,通識,實習,證照,語言能力"],
+    ["畢業門檻", "畢業門檻：\n詳情：\n<a href='https://www.cute.edu.tw/~gec/intro/student.html' target='_blank'>學生專區</a>\n- 學分要求\n- 必修與通識課程\n- 實習要求\n- 外語學習成就評量", "畢業,畢業門檻,學分,必修,通識,實習,證照,語言能力"],
     ["學校地址", "校區地址：\n- 台北校區：台北市文山區興隆路三段56號（捷運萬芳醫院站步行5分鐘）\n- 新竹校區：新竹縣湖口鄉中山路三段530號（台鐵北湖車站步行5分鐘）\n交通資訊：<a href='https://recruit.cute.edu.tw/university_exposition/transportation/' target='_blank'>點我查看</a>", "地址,交通,地圖,周邊,捷運,公車,位置"],
     ["退出", "感謝您的使用！祝您有美好的一天！如有問題隨時再來詢問我。", "再見,掰掰,bye,goodbye,結束,關閉"]
 ];
