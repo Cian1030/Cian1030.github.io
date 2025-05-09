@@ -196,27 +196,52 @@
         function getResponse(userInput) {
             userInput = userInput.trim().toLowerCase();
             
-            // 首先嘗試精確匹配關鍵詞
-            for (const [keyword, response, relatedKeywords] of CHATBOT_RESPONSES) {
-                if (keyword.toLowerCase() === userInput) {
-                    return response;
+            // 將用戶輸入分割成單詞
+            const userWords = userInput.split(/[\s,，]+/);
+            
+            // 計算每個回應的匹配分數
+            const responseScores = CHATBOT_RESPONSES.map(([keyword, response, relatedKeywords]) => {
+                let score = 0;
+                const keywordWords = keyword.toLowerCase().split(/[\s,，]+/);
+                const relatedWords = relatedKeywords ? relatedKeywords.toLowerCase().split(/[\s,，]+/) : [];
+                
+                // 檢查完全匹配
+                if (userInput === keyword.toLowerCase()) {
+                    score += 100;
                 }
+                
+                // 檢查關鍵詞匹配
+                for (const word of userWords) {
+                    // 檢查主關鍵詞
+                    if (keywordWords.some(kw => kw.includes(word) || word.includes(kw))) {
+                        score += 50;
+                    }
+                    
+                    // 檢查相關關鍵詞
+                    if (relatedWords.some(rw => rw.includes(word) || word.includes(rw))) {
+                        score += 30;
+                    }
+                }
+                
+                // 檢查部分匹配
+                if (userInput.includes(keyword.toLowerCase()) || keyword.toLowerCase().includes(userInput)) {
+                    score += 20;
+                }
+                
+                return { response, score };
+            });
+            
+            // 找出最高分的回應
+            const bestMatch = responseScores.reduce((best, current) => {
+                return current.score > best.score ? current : best;
+            }, { response: null, score: 0 });
+            
+            // 如果最高分超過閾值，返回對應回應
+            if (bestMatch.score >= 30) {
+                return bestMatch.response;
             }
             
-            // 然後嘗試在相關關鍵詞中查找
-            for (const [keyword, response, relatedKeywords] of CHATBOT_RESPONSES) {
-                if (relatedKeywords && relatedKeywords.toLowerCase().includes(userInput)) {
-                    return response;
-                }
-            }
-            
-            // 最後嘗試模糊匹配關鍵詞
-            for (const [keyword, response, relatedKeywords] of CHATBOT_RESPONSES) {
-                if (keyword.toLowerCase().includes(userInput)) {
-                    return response;
-                }
-            }
-            
+            // 如果沒有找到合適的匹配，返回默認回應
             return "抱歉，我不太明白你的意思。\n您可以詢問我關於：\n- 入學相關資訊\n- 系所資訊\n- 住宿資訊\n- 學務相關\n- 學習資源\n- 考試時間\n- 學校設施\n- 開學/結業時間\n- 學雜費\n- 畢業門檻\n- 學校地址\n等問題，我會盡力為您解答！";
         }
 
