@@ -140,6 +140,7 @@
         <div class="chat-header">
             校園助手
             <div>
+                <button onclick="minimizeChatbot()">_</button>
                 <button onclick="closeChatbot()">×</button>
             </div>
         </div>
@@ -160,13 +161,21 @@
                     addBotMessage('你好！我是校園助手，有什麼可以幫助你的嗎？');
                 }
             } else {
-                chatbotContainer.style.display = 'none';
+                minimizeChatbot();
             }
+        }
+
+        function minimizeChatbot() {
+            const chatbotContainer = document.getElementById('chatbotContainer');
+            chatbotContainer.style.display = 'none';
         }
 
         function closeChatbot() {
             const chatbotContainer = document.getElementById('chatbotContainer');
+            const chatMessages = document.getElementById('chatMessages');
             chatbotContainer.style.display = 'none';
+            // 清除所有對話記錄
+            chatMessages.innerHTML = '';
         }
 
         function addMessage(message, isUser) {
