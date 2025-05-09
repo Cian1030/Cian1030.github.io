@@ -12,7 +12,10 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #f9f9f9;
+            background-color: #f0f4f8;
+        }
+        main {
+            position: relative;
         }
         .chatbot-container {
             position: fixed;
@@ -22,254 +25,186 @@
             height: 600px;
             display: flex;
             flex-direction: column;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
             background-color: #fff;
-            display: none;
+            overflow: hidden;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .chatbot-container.active {
+            opacity: 1;
+            pointer-events: auto;
         }
         .chat-header {
-            padding: 15px;
+            background-color: #0066cc;
+            color: white;
+            padding: 1rem;
+            font-size: 18px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: #0078D7;
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
         }
         .chat-header button {
-            background: none;
+            background: transparent;
             border: none;
             color: white;
             font-size: 20px;
             cursor: pointer;
-            padding: 5px;
         }
         .chat-messages {
             flex: 1;
-            padding: 15px;
+            padding: 1rem;
             overflow-y: auto;
-            border-top: 1px solid #ddd;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+            background: #fafafa;
         }
         .message {
             max-width: 80%;
             padding: 10px 15px;
             border-radius: 15px;
-            margin: 5px 0;
+            margin: 0.5rem 0;
             word-wrap: break-word;
         }
         .user-message {
-            align-self: flex-end;
             background-color: #0078D7;
             color: white;
-            border-bottom-right-radius: 5px;
+            align-self: flex-end;
         }
         .bot-message {
-            align-self: flex-start;
-            background-color: #f0f0f0;
+            background-color: #e0e0e0;
             color: #333;
-            border-bottom-left-radius: 5px;
+            align-self: flex-start;
         }
         .chat-input {
             display: flex;
+            padding: 0.5rem;
             border-top: 1px solid #ddd;
-            padding: 10px;
+            gap: 0.5rem;
         }
         .chat-input textarea {
             flex: 1;
-            resize: none;
-            border: 1px solid #ddd;
+            border: 1px solid #ccc;
             border-radius: 20px;
-            padding: 10px 15px;
+            padding: 10px;
+            resize: none;
             font-size: 16px;
-            margin-right: 10px;
             height: 40px;
-            font-family: inherit;
         }
         .chat-input button {
-            padding: 10px 20px;
-            border: none;
             background-color: #0078D7;
             color: white;
-            font-size: 16px;
-            cursor: pointer;
+            border: none;
             border-radius: 20px;
+            padding: 10px 16px;
+            cursor: pointer;
             transition: background-color 0.3s;
         }
         .chat-input button:hover {
-            background-color: #005BB5;
+            background-color: #005bb5;
         }
         .chatbot-toggle {
             position: fixed;
             bottom: 20px;
             right: 20px;
+            background: #0078D7;
+            color: white;
+            border-radius: 50%;
             width: 60px;
             height: 60px;
-            background-color: #0078D7;
-            border-radius: 50%;
+            font-size: 32px;
             display: flex;
-            justify-content: center;
             align-items: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
             cursor: pointer;
-            color: white;
-            font-size: 24px;
-            font-weight: bold;
             transition: transform 0.3s;
         }
         .chatbot-toggle:hover {
             transform: scale(1.1);
         }
-        .link-message {
-            color: #0078D7;
-            text-decoration: underline;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
-    <div class="chatbot-toggle" onclick="toggleChatbot()">+</div>
+    <main aria-label="聊天機器人">
+        <div class="chatbot-toggle" onclick="toggleChatbot()">💬</div>
 
-    <div class="chatbot-container" id="chatbotContainer">
-        <div class="chat-header">
-            校園助手
-            <div>
-                <button onclick="minimizeChatbot()">_</button>
-                <button onclick="closeChatbot()">×</button>
+        <section class="chatbot-container" id="chatbotContainer">
+            <header class="chat-header">
+                校園助手
+                <div>
+                    <button aria-label="最小化" onclick="minimizeChatbot()">_</button>
+                    <button aria-label="關閉" onclick="closeChatbot()">×</button>
+                </div>
+            </header>
+            <div class="chat-messages" id="chatMessages"></div>
+            <div class="chat-input">
+                <textarea id="userInput" placeholder="請輸入您的問題..." onkeydown="handleKeyPress(event)"></textarea>
+                <button onclick="sendMessage()">送出</button>
             </div>
-        </div>
-        <div class="chat-messages" id="chatMessages"></div>
-        <div class="chat-input">
-            <textarea id="userInput" placeholder="請輸入您的問題..." onkeypress="handleKeyPress(event)"></textarea>
-            <button onclick="sendMessage()">發送</button>
-        </div>
-    </div>
+        </section>
+    </main>
 
     <script src="chatbot_responses.js"></script>
     <script>
         function toggleChatbot() {
-            const chatbotContainer = document.getElementById('chatbotContainer');
-            if (chatbotContainer.style.display === 'none' || chatbotContainer.style.display === '') {
-                chatbotContainer.style.display = 'flex';
-                if (document.getElementById('chatMessages').children.length === 0) {
-                    addBotMessage('你好！我是校園助手，有什麼可以幫助你的嗎？');
-                }
-            } else {
-                minimizeChatbot();
+            const chatbot = document.getElementById('chatbotContainer');
+            chatbot.classList.toggle('active');
+            if (chatbot.classList.contains('active') && !chatbot.dataset.greeted) {
+                addBotMessage('👋 你好！我是校園助手，有什麼能幫你的？');
+                chatbot.dataset.greeted = 'true';
             }
         }
-
         function minimizeChatbot() {
-            const chatbotContainer = document.getElementById('chatbotContainer');
-            chatbotContainer.style.display = 'none';
+            document.getElementById('chatbotContainer').classList.remove('active');
         }
-
         function closeChatbot() {
-            const chatbotContainer = document.getElementById('chatbotContainer');
-            const chatMessages = document.getElementById('chatMessages');
-            chatbotContainer.style.display = 'none';
-            // 清除所有對話記錄
-            chatMessages.innerHTML = '';
+            const chatbot = document.getElementById('chatbotContainer');
+            document.getElementById('chatMessages').innerHTML = '';
+            chatbot.classList.remove('active');
+            chatbot.dataset.greeted = '';
         }
-
-        function addMessage(message, isUser) {
-            const chatMessages = document.getElementById('chatMessages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
-            
-            if (!isUser) {
-                message = message.replace(/\n/g, '<br>');
-                messageDiv.innerHTML = message;
-            } else {
-                messageDiv.textContent = message;
-            }
-            
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+        function addMessage(text, isUser) {
+            const msg = document.createElement('div');
+            msg.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+            msg.innerHTML = isUser ? text : text.replace(/\n/g, '<br>');
+            const chat = document.getElementById('chatMessages');
+            chat.appendChild(msg);
+            chat.scrollTop = chat.scrollHeight;
         }
-
-        function addBotMessage(message) {
-            addMessage(message, false);
-        }
-
-        function addUserMessage(message) {
-            addMessage(message, true);
-        }
-
-        function getResponse(userInput) {
-            userInput = userInput.trim().toLowerCase();
-            
-            // 將用戶輸入分割成單詞
-            const userWords = userInput.split(/[\s,，]+/);
-            
-            // 計算每個回應的匹配分數
-            const responseScores = CHATBOT_RESPONSES.map(([keyword, response, relatedKeywords]) => {
-                let score = 0;
-                const keywordWords = keyword.toLowerCase().split(/[\s,，]+/);
-                const relatedWords = relatedKeywords ? relatedKeywords.toLowerCase().split(/[\s,，]+/) : [];
-                
-                // 檢查完全匹配
-                if (userInput === keyword.toLowerCase()) {
-                    score += 100;
-                }
-                
-                // 檢查關鍵詞匹配
-                for (const word of userWords) {
-                    // 檢查主關鍵詞
-                    if (keywordWords.some(kw => kw.includes(word) || word.includes(kw))) {
-                        score += 50;
-                    }
-                    
-                    // 檢查相關關鍵詞
-                    if (relatedWords.some(rw => rw.includes(word) || word.includes(rw))) {
-                        score += 30;
-                    }
-                }
-                
-                // 檢查部分匹配
-                if (userInput.includes(keyword.toLowerCase()) || keyword.toLowerCase().includes(userInput)) {
-                    score += 20;
-                }
-                
-                return { response, score };
+        function addBotMessage(text) { addMessage(text, false); }
+        function addUserMessage(text) { addMessage(text, true); }
+        function getResponse(input) {
+            const cleaned = input.trim().toLowerCase();
+            const words = cleaned.split(/[\s,，]+/);
+            const scores = CHATBOT_RESPONSES.map(([k, r, rel]) => {
+                let score = cleaned === k.toLowerCase() ? 100 : 0;
+                const kw = k.toLowerCase().split(/[\s,，]+/);
+                const rw = rel ? rel.toLowerCase().split(/[\s,，]+/) : [];
+                words.forEach(w => {
+                    if (kw.some(kwd => kwd.includes(w) || w.includes(kwd))) score += 50;
+                    if (rw.some(rwd => rwd.includes(w) || w.includes(rwd))) score += 30;
+                });
+                if (cleaned.includes(k.toLowerCase()) || k.toLowerCase().includes(cleaned)) score += 20;
+                return { response: r, score };
             });
-            
-            // 找出最高分的回應
-            const bestMatch = responseScores.reduce((best, current) => {
-                return current.score > best.score ? current : best;
-            }, { response: null, score: 0 });
-            
-            // 如果最高分超過閾值，返回對應回應
-            if (bestMatch.score >= 30) {
-                return bestMatch.response;
-            }
-            
-            // 如果沒有找到合適的匹配，返回默認回應
-            return "抱歉，我不太明白你的意思。\n您可以詢問我關於：\n- 入學相關資訊\n- 系所資訊\n- 住宿資訊\n- 學務相關\n- 學習資源\n- 考試時間\n- 學校設施\n- 開學/結業時間\n- 學雜費\n- 畢業門檻\n- 學校地址\n等問題，我會盡力為您解答！";
+            const best = scores.reduce((a, b) => b.score > a.score ? b : a, { response: '', score: 0 });
+            return best.score >= 30 ? best.response : 
+                "🤔 抱歉我不太明白您的意思，您可以問：\n- 入學資訊\n- 系所介紹\n- 住宿申請\n- 學務相關\n- 學習資源\n- 考試時間\n- 設施位置\n- 開學結業\n- 學雜費\n- 畢業門檻\n- 學校地址\n等等～";
         }
-
         function sendMessage() {
-            const userInput = document.getElementById('userInput');
-            const message = userInput.value.trim();
-
-            if (message) {
-                addUserMessage(message);
-                userInput.value = '';
-                
-                const response = getResponse(message);
-                addBotMessage(response);
+            const input = document.getElementById('userInput');
+            const msg = input.value.trim();
+            if (msg) {
+                addUserMessage(msg);
+                input.value = '';
+                const res = getResponse(msg);
+                setTimeout(() => addBotMessage(res), 500);
             }
         }
-
-        function handleKeyPress(event) {
-            if (event.key === 'Enter' && !event.shiftKey) {
-                event.preventDefault();
+        function handleKeyPress(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
                 sendMessage();
             }
         }
