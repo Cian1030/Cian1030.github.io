@@ -21,8 +21,10 @@
             position: fixed;
             bottom: 20px;
             right: 20px;
-            width: 400px;
-            height: 600px;
+            width: 90%;
+            max-width: 400px;
+            height: 80vh;
+            max-height: 600px;
             display: flex;
             flex-direction: column;
             border-radius: 12px;
@@ -110,18 +112,37 @@
             background: #0078D7;
             color: white;
             border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            font-size: 32px;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
             cursor: pointer;
             transition: transform 0.3s;
+            z-index: 1000;
         }
         .chatbot-toggle:hover {
             transform: scale(1.1);
+        }
+        @media (max-width: 768px) {
+            .chatbot-container {
+                width: 100%;
+                height: 100vh;
+                max-height: none;
+                bottom: 0;
+                right: 0;
+                border-radius: 0;
+            }
+            .chatbot-toggle {
+                width: 45px;
+                height: 45px;
+                font-size: 20px;
+            }
+            .message {
+                max-width: 90%;
+            }
         }
     </style>
 </head>
