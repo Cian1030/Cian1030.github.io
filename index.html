@@ -129,8 +129,13 @@
             justify-content: center;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
             cursor: pointer;
-            transition: transform 0.3s;
+            transition: transform 0.3s, opacity 0.3s;
             z-index: 1000;
+            opacity: 1;
+        }
+        .chatbot-toggle.hidden {
+            opacity: 0;
+            pointer-events: none;
         }
         .chatbot-toggle:hover {
             transform: scale(1.1);
@@ -206,19 +211,26 @@
     <script>
         function toggleChatbot() {
             const chatbot = document.getElementById('chatbotContainer');
+            const toggle = document.querySelector('.chatbot-toggle');
             chatbot.classList.toggle('active');
+            toggle.classList.toggle('hidden');
             if (chatbot.classList.contains('active') && !chatbot.dataset.greeted) {
                 addBotMessage('👋 你好！我是校園助手，有什麼能幫你的？');
                 chatbot.dataset.greeted = 'true';
             }
         }
         function minimizeChatbot() {
-            document.getElementById('chatbotContainer').classList.remove('active');
+            const chatbot = document.getElementById('chatbotContainer');
+            const toggle = document.querySelector('.chatbot-toggle');
+            chatbot.classList.remove('active');
+            toggle.classList.remove('hidden');
         }
         function closeChatbot() {
             const chatbot = document.getElementById('chatbotContainer');
+            const toggle = document.querySelector('.chatbot-toggle');
             document.getElementById('chatMessages').innerHTML = '';
             chatbot.classList.remove('active');
+            toggle.classList.remove('hidden');
             chatbot.dataset.greeted = '';
         }
         function addMessage(text, isUser) {
