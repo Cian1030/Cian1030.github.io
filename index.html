@@ -12,7 +12,8 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #f0f4f8;
+            background: linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.7)), url('background.png') no-repeat center center fixed;
+            background-size: cover;
         }
         main {
             position: relative;
@@ -99,6 +100,15 @@
             -webkit-appearance: none;
             -moz-appearance: none;
             appearance: none;
+            transition: border-color 0.3s;
+        }
+        .chat-input textarea:focus {
+            outline: none;
+            border-color: #0078D7;
+        }
+        .chat-input textarea:disabled {
+            background-color: #f5f5f5;
+            cursor: not-allowed;
         }
         .chat-input button {
             background-color: #0078D7;
@@ -139,6 +149,20 @@
         }
         .chatbot-toggle:hover {
             transform: scale(1.1);
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #0078D7;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         @media (max-width: 768px) {
             .chatbot-container {
@@ -209,6 +233,8 @@
 
     <script src="chatbot_responses.js"></script>
     <script>
+        let isProcessing = false;
+        
         function toggleChatbot() {
             const chatbot = document.getElementById('chatbotContainer');
             const toggle = document.querySelector('.chatbot-toggle');
@@ -219,12 +245,14 @@
                 chatbot.dataset.greeted = 'true';
             }
         }
+        
         function minimizeChatbot() {
             const chatbot = document.getElementById('chatbotContainer');
             const toggle = document.querySelector('.chatbot-toggle');
             chatbot.classList.remove('active');
             toggle.classList.remove('hidden');
         }
+        
         function closeChatbot() {
             const chatbot = document.getElementById('chatbotContainer');
             const toggle = document.querySelector('.chatbot-toggle');
@@ -233,6 +261,7 @@
             toggle.classList.remove('hidden');
             chatbot.dataset.greeted = '';
         }
+        
         function addMessage(text, isUser) {
             const msg = document.createElement('div');
             msg.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
@@ -241,36 +270,61 @@
             chat.appendChild(msg);
             chat.scrollTop = chat.scrollHeight;
         }
+        
         function addBotMessage(text) { addMessage(text, false); }
         function addUserMessage(text) { addMessage(text, true); }
+        
         function getResponse(input) {
-            const cleaned = input.trim().toLowerCase();
-            const words = cleaned.split(/[\s,，]+/);
-            const scores = CHATBOT_RESPONSES.map(([k, r, rel]) => {
-                let score = cleaned === k.toLowerCase() ? 100 : 0;
-                const kw = k.toLowerCase().split(/[\s,，]+/);
-                const rw = rel ? rel.toLowerCase().split(/[\s,，]+/) : [];
-                words.forEach(w => {
-                    if (kw.some(kwd => kwd.includes(w) || w.includes(kwd))) score += 50;
-                    if (rw.some(rwd => rwd.includes(w) || w.includes(rwd))) score += 30;
+            try {
+                const cleaned = input.trim().toLowerCase();
+                const words = cleaned.split(/[\s,，]+/);
+                const scores = CHATBOT_RESPONSES.map(([k, r, rel]) => {
+                    let score = cleaned === k.toLowerCase() ? 100 : 0;
+                    const kw = k.toLowerCase().split(/[\s,，]+/);
+                    const rw = rel ? rel.toLowerCase().split(/[\s,，]+/) : [];
+                    words.forEach(w => {
+                        if (kw.some(kwd => kwd.includes(w) || w.includes(kwd))) score += 50;
+                        if (rw.some(rwd => rwd.includes(w) || w.includes(rwd))) score += 30;
+                    });
+                    if (cleaned.includes(k.toLowerCase()) || k.toLowerCase().includes(cleaned)) score += 20;
+                    return { response: r, score };
                 });
-                if (cleaned.includes(k.toLowerCase()) || k.toLowerCase().includes(cleaned)) score += 20;
-                return { response: r, score };
-            });
-            const best = scores.reduce((a, b) => b.score > a.score ? b : a, { response: '', score: 0 });
-            return best.score >= 30 ? best.response : 
-                "🤔 抱歉我不太明白您的意思，您可以問：\n- 入學資訊\n- 系所介紹\n- 住宿申請\n- 學務相關\n- 學習資源\n- 考試時間\n- 設施位置\n- 開學結業\n- 學雜費\n- 畢業門檻\n- 學校地址\n等等～";
-        }
-        function sendMessage() {
-            const input = document.getElementById('userInput');
-            const msg = input.value.trim();
-            if (msg) {
-                addUserMessage(msg);
-                input.value = '';
-                const res = getResponse(msg);
-                setTimeout(() => addBotMessage(res), 500);
+                const best = scores.reduce((a, b) => b.score > a.score ? b : a, { response: '', score: 0 });
+                return best.score >= 30 ? best.response : 
+                    "🤔 抱歉我不太明白您的意思，您可以問：\n- 入學資訊\n- 系所介紹\n- 住宿申請\n- 學務相關\n- 學習資源\n- 考試時間\n- 設施位置\n- 開學結業\n- 學雜費\n- 畢業門檻\n- 學校地址\n等等～";
+            } catch (error) {
+                console.error('Error in getResponse:', error);
+                return "抱歉，系統發生錯誤，請稍後再試。";
             }
         }
+        
+        async function sendMessage() {
+            if (isProcessing) return;
+            
+            const input = document.getElementById('userInput');
+            const msg = input.value.trim();
+            
+            if (msg) {
+                isProcessing = true;
+                input.disabled = true;
+                addUserMessage(msg);
+                input.value = '';
+                
+                try {
+                    const res = getResponse(msg);
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    addBotMessage(res);
+                } catch (error) {
+                    console.error('Error sending message:', error);
+                    addBotMessage("抱歉，系統發生錯誤，請稍後再試。");
+                } finally {
+                    isProcessing = false;
+                    input.disabled = false;
+                    input.focus();
+                }
+            }
+        }
+        
         function handleKeyPress(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
