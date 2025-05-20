@@ -1,15 +1,35 @@
 const CHATBOT_RESPONSES = [
-    ["你好", "你好！我是校園助手，很高興為您服務！\n您可以詢問我關於：\n- 入學資訊\n- 系所介紹\n- 住宿申請\n- 學務相關\n- 學習資源\n- 考試時間\n- 設施位置\n- 開學結業\n- 學雜費\n- 畢業門檻\n- 學校地址\n等問題，我會盡力為您解答！", "嗨,哈囉,您好,hi,hello"],
+    ["你好", "你好！我是校園助手，很高興為您服務！\n您可以詢問我關於：\n- 入學資訊\n- 系所介紹\n- 住宿申請\n- 學務相關\n- 學習資源\n- 考試時間\n- 設施位置\n- 開學結業\n- 學雜費\n- 畢業門檻\n- 學校地址\n- 選課相關\n等問題，我會盡力為您解答！", "嗨,哈囉,您好,hi,hello"],
     ["入學相關", "入學資訊請參考：\n<a href='https://recruit.cute.edu.tw/' target='_blank'>招生資訊網</a>\n\n提供招生管道日程、科系總覽、文宣下載、入學優惠等資訊。\n若您想了解報名方式、備審資料、入學意願表填寫，請輸入「報名」、「備審」、「意願表」。", "入學,招生,報名,備審,意願表,考試,新生,錄取"],
     ["系所相關", "本校系所一覽：\n\n規劃與設計學院：\n- <a href='https://arch.gm.cute.edu.tw/' target='_blank'>建築系</a>\n- <a href='https://dcivil.gm.cute.edu.tw/' target='_blank'>土木與防災系</a>\n- <a href='https://dinte.gm.cute.edu.tw/' target='_blank'>室內設計系</a>\n- <a href='https://web.cute.edu.tw/dvcd/' target='_blank'>視覺傳達設計系</a>\n- <a href='https://dfvp.cute.edu.tw/' target='_blank'>影視設計系</a>\n- <a href='https://dmd.cute.edu.tw/' target='_blank'>數位多媒體設計系</a>\n- <a href='https://sonic0933.wixsite.com/cutemusic/' target='_blank'>學士後多元培力學程數位音樂音效專班</a>\n\n管理學院：\n- <a href='https://dba.gm.cute.edu.tw/' target='_blank'>企業管理系</a>\n- <a href='https://atsm.gm.cute.edu.tw/' target='_blank'>含航空暨運輸服務管理組</a>\n- <a href='https://dft.gm.cute.edu.tw/' target='_blank'>企業管理雙學士學位學程</a>\n- <a href='https://dib.gm.cute.edu.tw/' target='_blank'>智慧商務經營管理系</a>\n- <a href='https://dfin.gm.cute.edu.tw/' target='_blank'>財務金融系</a>\n- <a href='https://dml.gm.cute.edu.tw/' target='_blank'>行銷與流通管理系</a>\n- <a href='https://deng.gm.cute.edu.tw/' target='_blank'>應用英語系</a>\n- <a href='https://dtlm.gm.cute.edu.tw/' target='_blank'>觀光與休閒事業管理系</a>\n\n資訊學院：\n- <a href='https://sites.google.com/view/cutedmis' target='_blank'>資訊管理系</a>\n- <a href='https://dcsie.gm.cute.edu.tw/' target='_blank'>資訊工程系</a>\n\n若想了解特定系所詳細資訊，請點擊上方連結或輸入系所名稱。", "系所,科系,學系,學院,課程,師資,教授,老師,選課,學分"],
     ["住宿相關", "住宿資訊請參考：\n新竹校區宿舍：地上7層、地下1層，提供四人房與無障礙套房。\n台北校區弘道樓女生宿舍限外縣市女新生申請。\n申請詳情：\n<a href='https://ccnt4.cute.edu.tw/ipiac/page05_4.html' target='_blank'>新竹宿舍</a> | <a href='https://m.cute.edu.tw/CutePublicFile/e736f941-1dce-4910-a906-c20452860095/113%E8%87%BA%E5%8C%97%E6%A0%A1%E5%8D%80%E5%A5%B3%E7%94%9F%E5%AE%BF%E8%88%8D%E7%94%B3%E8%AB%8B%E9%A0%88%E7%9F%A5%28%E6%96%B0%E7%94%9F%E6%89%8B%E5%86%8A%29-%E7%B6%B2%E8%B7%AF%E7%89%88.pdf' target='_blank'>台北宿舍</a>", "住宿,宿舍,住宿費,申請,入住,退宿,搬遷,生活公約,宿舍規定"],
     ["學務相關", "學務相關請參考：\n<a href='https://osa.gm.cute.edu.tw/' target='_blank'>學生事務處</a>\n\n包含：課外活動、生活輔導、衛生保健、學生輔導中心、原住民族學生資源中心。\n如想了解獎學金、社團、輔導，請輸入「獎學金」、「社團」、「輔導」。", "學務,獎學金,社團,輔導,生活服務,校園安全,學生會,課外活動"],
-    ["學習資源", "學習資源請參考：\n<a href='https://moodle.cute.edu.tw/' target='_blank'>moodle學習平台</a> | <a href='https://dib.gm.cute.edu.tw/%E5%AD%B8%E7%BF%92%E8%B3%87%E6%BA%90/%E6%A0%A1%E5%85%A7%E5%AD%B8%E7%BF%92%E8%B3%87%E6%BA%90' target='_blank'>CUTe雲</a>\n\n提供線上課程、教材、作業繳交、成績查詢、圖書館資源、語言自學中心。", "學習,資源,圖書館,線上課程,教材,作業,成績,討論區,數位學習"],
+    ["學習資源", "學習資源請參考：\n<a href='http://moodle.cute.edu.tw/' target='_blank'>moodle學習平台</a> | <a href='https://qt.cute.edu.tw/' target='_blank'>CUTe雲</a>\n\n提供線上課程、教材、作業繳交、成績查詢、圖書館資源、語言自學中心。", "學習,資源,圖書館,線上課程,教材,作業,成績,討論區,數位學習"],
     ["考試時間", "考試資訊：\n- 期中考：約學期第9周\n- 期末考：約學期第18周\n詳細安排請參考：\n<a href='https://www.cute.edu.tw/calendar.html' target='_blank'>校園行事曆</a>", "期中考,期末考,考試,考試時間,行事曆,考試範圍,考試規則"],
     ["學校設施", "校園設施包括：\n- 休閒活動中心：球館、游泳館、SPA池、蒸氣室\n- 圖書館：語言自學中心、視聽區\n詳情請參考：\n<a href='https://recruit.cute.edu.tw/university_exposition/campus_life/' target='_blank'>校園生活</a>", "設施,圖書館,體育館,運動,休閒,球館,游泳館,校園設施"],
     ["學雜費", "學雜費資訊：\n查詢與繳費請至：\n<a href='https://sub.cute.edu.tw/onlinePay/' target='_blank'>繳費專區</a>\n\n提供線上查詢繳費單、ATM繳費、銀行臨櫃繳費服務。\n如需就學貸款，請洽學生事務處。", "學雜費,學費,雜費,繳費,減免,貸款,低收入戶"],
     ["畢業門檻", "畢業門檻：\n- 學分要求\n- 必修與通識課程\n- 實習要求\n- 外語學習成就評量\n詳情：\n<a href='https://www.cute.edu.tw/~gec/intro/student.html' target='_blank'>學生專區</a>", "畢業,畢業門檻,學分,必修,通識,實習,證照,語言能力"],
     ["學校地址", "校區地址：\n- 台北校區：台北市文山區興隆路三段56號（捷運萬芳醫院站步行5分鐘）\n- 新竹校區：新竹縣湖口鄉中山路三段530號（台鐵北湖車站步行5分鐘）\n交通資訊：<a href='https://recruit.cute.edu.tw/university_exposition/transportation/' target='_blank'>點我查看</a>", "地址,交通,地圖,周邊,捷運,公車,位置"],
     ["開學結業", "學期時間安排：\n\n第一學期：\n- 開學日：9月1日\n- 結業日：1月15日\n\n第二學期：\n- 開學日：2月15日\n- 結業日：6月30日\n\n詳細行事曆請參考：\n<a href='https://www.cute.edu.tw/calendar.html' target='_blank'>校園行事曆</a>", "開學,結業,學期,行事曆,開學日,結業日,學期時間"],
-    ["退出", "感謝您的使用！祝您有美好的一天！如有問題隨時再來詢問我。", "再見,掰掰,bye,goodbye,結束,關閉"]
+    ["選課相關", "選課系統請至：\n<a href='http://192.192.78.204/Finalcs_select1/std_login.aspx' target='_blank'>選課系統</a>\n\n注意事項：\n1. 選課系統帳號密碼與單一入口帳號密碼一致\n2. 若忘記密碼：\n   - 請至圖資中心重置密碼\n   - 或於單一入口網站使用備用信箱重置\n3. 首次登入密碼預設為身份證字號\n4. 修改密碼請至<a href='http://iq.cute.edu.tw' target='_blank'>單一入口網</a>\n\n※本系統僅限使用微軟IE瀏覽器", "選課,加退選,選課系統,課程,學分,選修,必修,通識"],
+    ["提前畢業", "若符合學分與成績門檻，經系主任與教務處核准可申請提前畢業。\n\n<a href='https://drive.google.com/file/d/1SsIL2psAFuARNFVsLeUlz8XU7-gqqfQd/view' target='_blank'>大學部成績優異學生提前畢業申請表</a>", "提前畢業,加速畢業"],
+    ["心理諮詢", "學校提供免費心理諮詢服務，請洽學生輔導中心預約:\n<a href='https://sites.google.com/gm.cute.edu.tw/student-counseling-center/%E5%AD%B8%E8%BC%94%E4%B8%AD%E5%BF%83%E9%A6%96%E9%A0%81' target='_blank'>學生輔導中心</a>", "心理,諮商,心理輔導"],
+    ["退出", "感謝您的使用！祝您有美好的一天！如有問題隨時再來詢問我。", "再見,掰掰,bye,goodbye,結束,關閉"],
+    
+    // 教務處 Q&A 擴充
+    ["學位證書補發", "您可以親自或委託他人至聯合服務中心申請學位證書補發，需攜帶身分證明文件，並繳交工本費。詳細流程請參考：<a href='https://acad.gm.cute.edu.tw/qa' target='_blank'>教務處Q&A</a>", "畢業證書,學位證書,補發,遺失,破損"],
+    ["中文成績單申請", "您可以透過成績列印暨自動化繳費系統申請中文成績單，或親自至聯合服務中心辦理。詳情請參考：<a href='https://acad.gm.cute.edu.tw/qa' target='_blank'>教務處Q&A</a>", "成績單,中文成績單,申請成績單"],
+    ["在學證明書申請", "持學生證正本至所屬教務單位填寫申請表，即可申請在學證明書。詳情請參考：<a href='https://acad.gm.cute.edu.tw/qa' target='_blank'>教務處Q&A</a>", "在學證明,在學證明書,申請在學證明"],
+    ["學生證補辦", "請先至校園系統單一入口網站掛失學生證，然後填寫補發申請表，並繳交工本費。詳情請參考：<a href='https://acad.gm.cute.edu.tw/qa' target='_blank'>教務處Q&A</a>", "學生證,補辦學生證,掛失,補發"],
+    ["成績排名證明申請", "持學生證或身分證至聯合服務中心填寫申請表，並繳交工本費，即可申請成績排名證明。詳情請參考：<a href='https://acad.gm.cute.edu.tw/qa' target='_blank'>教務處Q&A</a>", "成績排名,排名證明,申請排名證明"],
+    ["英文證明書申請", "您可以申請英文版的學位證書、在學證明書、修業證明書及成績單，需填寫申請表並繳交工本費。詳情請參考：<a href='https://acad.gm.cute.edu.tw/qa' target='_blank'>教務處Q&A</a>", "英文證明,英文成績單,英文畢業證書"],
+    ["姓名更改", "若已至戶政機關改名，請攜帶相關證明文件至教務單位辦理姓名更改手續。詳情請參考：<a href='https://acad.gm.cute.edu.tw/qa' target='_blank'>教務處Q&A</a>", "改名,姓名更改,更改姓名"],
+    ["修業證明申請", "退學學生如在校肄業滿一學期，可申請修業證明書，需填寫申請表並繳交相關文件。詳情請參考：<a href='https://acad.gm.cute.edu.tw/qa' target='_blank'>教務處Q&A</a>", "修業證明,肄業證明,申請修業證明"],
+    ["學位證書影本加蓋校印", "請持學位證書正本及影本至教務單位申請加蓋校印，亦可委託他人或通訊辦理。詳情請參考：<a href='https://acad.gm.cute.edu.tw/qa' target='_blank'>教務處Q&A</a>", "校印,關防,加蓋校印,畢業證書影本"],
+    ["學雜費繳費單下載", "您可以至土地銀行代收學雜費服務網或學校單一入口服務網下載並列印繳費單。詳情請參考：<a href='https://acad.gm.cute.edu.tw/qa' target='_blank'>教務處Q&A</a>", "學雜費,繳費單,下載繳費單"],
+    ["逾期繳費處理", "若已逾繳費期限，請儘速依註冊通知上的繳費方式繳納，並與教務單位聯繫。詳情請參考：<a href='https://acad.gm.cute.edu.tw/qa' target='_blank'>教務處Q&A</a>", "逾期繳費,補繳學費,學雜費逾期"],
+    ["註冊章蓋章", "註冊完成後，可由班級幹部統一或個人自行交至所屬教務單位加蓋註冊印章。詳情請參考：<a href='https://acad.gm.cute.edu.tw/qa' target='_blank'>教務處Q&A</a>", "註冊章,蓋章,學生證蓋章"],
+    ["休學手續辦理", "請先與導師晤談，填寫休學申請表，並經相關單位簽辦後交至教務單位辦理。詳情請參考：<a href='https://acad.gm.cute.edu.tw/qa' target='_blank'>教務處Q&A</a>", "休學,休學申請,辦理休學"],
+    ["休學期間當兵", "請持徵集令正本及影本交至教務單位辦理延長休學，退伍後再辦理復學手續。詳情請參考：<a href='https://acad.gm.cute.edu.tw/qa' target='_blank'>教務處Q&A</a>", "當兵,徵集令,延長休學"],
+    ["提前復學", "若欲提前復學，需符合相關規定，並辦理復學手續，請洽教務單位。詳情請參考：<a href='https://acad.gm.cute.edu.tw/qa' target='_blank'>教務處Q&A</a>", "提前復學,復學申請,休學復學"]
 ];
