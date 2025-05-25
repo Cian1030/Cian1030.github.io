@@ -291,7 +291,7 @@
                 });
                 const best = scores.reduce((a, b) => b.score > a.score ? b : a, { response: '', score: 0 });
                 return best.score >= 30 ? best.response : 
-                    "🤔 抱歉我不太明白您的意思，您可以問：\n- 入學資訊\n- 系所介紹\n- 住宿申請\n- 學務相關\n- 學習資源\n- 考試時間\n- 設施位置\n- 開學結業\n- 學雜費\n- 畢業門檻\n- 學校地址\n等等～";
+                    "🤔 抱歉我不太明白您的意思，您可以問：\n- 入學資訊\n- 系所介紹\n- 住宿申請\n- 學務相關\n- 學習資源\n- 考試時間\n- 設施位置\n- 開學結業\n- 學雜費\n- 畢業門檻\n- 學校地址";
             } catch (error) {
                 console.error('Error in getResponse:', error);
                 return "抱歉，系統發生錯誤，請稍後再試。";
@@ -332,7 +332,7 @@
             }
         }
 
-        // 添加虚拟键盘处理
+        
         document.getElementById('userInput').addEventListener('focus', function() {
             setTimeout(() => {
                 const chatMessages = document.getElementById('chatMessages');
@@ -340,14 +340,14 @@
             }, 300);
         });
 
-        // 防止iOS橡皮筋效果
+        
         document.body.addEventListener('touchmove', function(e) {
             if (e.target.closest('.chat-messages') === null) {
                 e.preventDefault();
             }
         }, { passive: false });
 
-        // 优化移动端点击区域
+        
         document.querySelectorAll('button').forEach(button => {
             button.style.minHeight = '44px';
         });
