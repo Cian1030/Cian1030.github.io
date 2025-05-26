@@ -10,7 +10,7 @@ const CHATBOT_RESPONSES = [
     ["學雜費", "學雜費資訊：\n查詢與繳費請至：\n<a href='https://sub.cute.edu.tw/onlinePay/' target='_blank'>繳費專區</a>\n\n提供線上查詢繳費單、ATM繳費、銀行臨櫃繳費服務。\n如需就學貸款，請洽學生事務處。", "學雜費,學費,雜費,繳費,減免,就學貸款,學貸,貸款,低收入戶"],
     ["畢業門檻", "畢業門檻：\n- 學分要求\n- 必修與通識課程\n- 實習要求\n- 外語學習成就評量\n詳情：\n<a href='https://www.cute.edu.tw/~gec/intro/student.html' target='_blank'>學生專區</a>", "畢業,畢業門檻,學分,必修,通識,實習,證照,語言能力"],
     ["學校地址", "校區地址：\n- 台北校區：台北市文山區興隆路三段56號（捷運萬芳醫院站步行5分鐘）\n- 新竹校區：新竹縣湖口鄉中山路三段530號（台鐵北湖車站步行5分鐘）\n交通資訊：<a href='https://recruit.cute.edu.tw/university_exposition/transportation/' target='_blank'>點我查看</a>", "地址,交通,地圖,周邊,捷運,公車,位置"],
-    ["開學結業", "學期時間安排：\n\n第一學期：\n- 開學日：9月1日\n- 結業日：1月15日\n\n第二學期：\n- 開學日：2月15日\n- 結業日：6月30日\n\n詳細行事曆請參考：\n<a href='https://www.cute.edu.tw/calendar.html' target='_blank'>校園行事曆</a>", "開學,結業,學期,行事曆,開學日,結業日,學期時間"],
+    ["開學結業", "詳細時間請參考：\n<a href='https://www.cute.edu.tw/calendar.html' target='_blank'>校園行事曆</a>", "開學,結業,學期,行事曆,開學日,結業日,學期時間"],
     ["選課相關", "選課系統請至：\n<a href='http://192.192.78.204/Finalcs_select1/std_login.aspx' target='_blank'>選課系統</a>\n\n注意事項：\n1. 選課系統帳號密碼與單一入口帳號密碼一致\n2. 若忘記密碼：\n   - 請至圖資中心重置密碼\n   - 或於單一入口網站使用備用信箱重置\n3. 首次登入密碼預設為身份證字號\n4. 修改密碼請至<a href='http://iq.cute.edu.tw' target='_blank'>單一入口網</a>\n\n※本系統僅限使用微軟IE瀏覽器", "選課,加退選,選課系統,課程,學分,選修,必修,通識"],
     ["提前畢業", "若符合學分與成績門檻，經系主任與教務處核准可申請提前畢業。\n\n<a href='https://drive.google.com/file/d/1SsIL2psAFuARNFVsLeUlz8XU7-gqqfQd/view' target='_blank'>大學部成績優異學生提前畢業申請表</a>", "提前畢業,加速畢業"],
     ["心理諮詢", "學校提供免費心理諮詢服務，請洽學生輔導中心預約:\n<a href='https://sites.google.com/gm.cute.edu.tw/student-counseling-center/%E5%AD%B8%E8%BC%94%E4%B8%AD%E5%BF%83%E9%A6%96%E9%A0%81' target='_blank'>學生輔導中心</a>", "心理,諮商,心理輔導"],
@@ -55,6 +55,7 @@ const CHATBOT_RESPONSES = [
     
     //補充
     ["獎學金","獎學金資訊請參考：\n<a href='https://sites.google.com/gm.cute.edu.tw/ecas/%E8%AA%B2%E5%A4%96%E7%B5%84%E7%8D%8E%E5%8A%A9%E5%AD%B8%E9%87%91%E5%B0%88%E5%8D%80?pli=1' target='_blank'>獎學金專區</a>\n\n提供以下獎學金：\n- 校內獎學金\n- 校外獎學金\n- 清寒獎學金\n- 優秀學生獎學金\n- 特殊表現獎學金\n\n申請注意事項：\n1. 請依各獎學金規定時間提出申請\n2. 備齊所需文件\n3. 符合申請資格\n4. 經系所審核後送交學務處","獎金,獎助學金,清寒獎學金,優秀獎學金"],
+    
 
 
 ];
