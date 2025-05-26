@@ -32,9 +32,10 @@
             box-shadow: 0 8px 16px rgba(0,0,0,0.15);
             background-color: #fff;
             overflow: hidden;
-            transition: transform 0.3s ease, opacity 0.3s ease;
+            transition: opacity 0.3s ease;
             opacity: 0;
             pointer-events: none;
+            cursor: move;
         }
         .chatbot-container.active {
             opacity: 1;
@@ -48,6 +49,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            cursor: move;
+            user-select: none;
         }
         .chat-header button {
             background: transparent;
@@ -234,6 +237,82 @@
     <script src="chatbot_responses.js"></script>
     <script>
         let isProcessing = false;
+        let isDragging = false;
+        let startX, startY;
+        let initialX = 0;
+        let initialY = 0;
+        
+        const chatbot = document.getElementById('chatbotContainer');
+        const header = chatbot.querySelector('.chat-header');
+        
+        function dragStart(e) {
+            if (e.target.closest('.chat-header')) {
+                isDragging = true;
+                chatbot.style.transition = 'none';
+                
+                if (e.type === "touchstart") {
+                    startX = e.touches[0].clientX;
+                    startY = e.touches[0].clientY;
+                } else {
+                    startX = e.clientX;
+                    startY = e.clientY;
+                }
+                
+                const rect = chatbot.getBoundingClientRect();
+                initialX = rect.left;
+                initialY = rect.top;
+            }
+        }
+
+        function dragEnd() {
+            isDragging = false;
+            chatbot.style.transition = 'transform 0.3s ease';
+        }
+
+        function drag(e) {
+            if (!isDragging) return;
+            
+            e.preventDefault();
+            
+            let currentX, currentY;
+            
+            if (e.type === "touchmove") {
+                currentX = e.touches[0].clientX;
+                currentY = e.touches[0].clientY;
+            } else {
+                currentX = e.clientX;
+                currentY = e.clientY;
+            }
+            
+            const deltaX = currentX - startX;
+            const deltaY = currentY - startY;
+            
+            const newX = initialX + deltaX;
+            const newY = initialY + deltaY;
+            
+            // 确保不会超出屏幕边界
+            const rect = chatbot.getBoundingClientRect();
+            const maxX = window.innerWidth - rect.width;
+            const maxY = window.innerHeight - rect.height;
+            
+            const boundedX = Math.max(0, Math.min(newX, maxX));
+            const boundedY = Math.max(0, Math.min(newY, maxY));
+            
+            chatbot.style.left = `${boundedX}px`;
+            chatbot.style.top = `${boundedY}px`;
+            chatbot.style.right = 'auto';
+            chatbot.style.bottom = 'auto';
+        }
+
+        // 添加事件监听器
+        header.addEventListener("mousedown", dragStart);
+        header.addEventListener("touchstart", dragStart);
+        
+        document.addEventListener("mousemove", drag);
+        document.addEventListener("touchmove", drag);
+        
+        document.addEventListener("mouseup", dragEnd);
+        document.addEventListener("touchend", dragEnd);
         
         function toggleChatbot() {
             const chatbot = document.getElementById('chatbotContainer');
