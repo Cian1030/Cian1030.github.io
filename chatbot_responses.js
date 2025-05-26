@@ -6,7 +6,7 @@ const CHATBOT_RESPONSES = [
     ["學務相關", "學務相關請參考：\n<a href='https://osa.gm.cute.edu.tw/' target='_blank'>學生事務處</a>\n\n包含：課外活動、生活輔導、衛生保健、學生輔導中心、原住民族學生資源中心。\n如想了解獎學金、輔導，請輸入「獎學金」、「輔導」。", "學務,輔導,生活服務,校園安全,學生會,課外活動"],
     ["學習資源", "學習資源請參考：\n<a href='http://moodle.cute.edu.tw/' target='_blank'>moodle學習平台</a> | <a href='https://qt.cute.edu.tw/' target='_blank'>CUTe雲</a>\n\n提供線上課程、教材、作業繳交、成績查詢、圖書館資源、語言自學中心。", "學習,資源,圖書館,線上課程,教材,作業,成績,討論區,數位學習,moodle"],
     ["考試時間", "考試資訊：\n- 期中考：約學期第9周\n- 期末考：約學期第18周\n詳細安排請參考：\n<a href='https://www.cute.edu.tw/calendar.html' target='_blank'>校園行事曆</a>", "期中考,期中時間,期末時間,期末考,考試,考試時間,行事曆,考試範圍,考試規則"],
-    ["學校設施", "校園設施包括：\n- 休閒活動中心：球館、游泳館、SPA池、蒸氣室\n- 圖書館：語言自學中心、視聽區\n詳情請參考：\n<a href='https://recruit.cute.edu.tw/university_exposition/campus_life/' target='_blank'>校園生活</a>", "設施,圖書館,體育館,運動,休閒,球館,游泳館,校園設施"],
+    ["學校設施", "校園設施包括：\n- 休閒活動中心：球館、游泳館(竹)、SPA池(竹)、蒸氣室(竹)\n- 圖書館：語言自學中心、視聽區\n詳情請參考：\n<a href='https://recruit.cute.edu.tw/university_exposition/campus_life/' target='_blank'>校園生活</a>", "設施,圖書館,體育館,運動,休閒,球館,游泳館,校園設施"],
     ["學雜費", "學雜費資訊：\n查詢與繳費請至：\n<a href='https://sub.cute.edu.tw/onlinePay/' target='_blank'>繳費專區</a>\n\n提供線上查詢繳費單、ATM繳費、銀行臨櫃繳費服務。\n如需就學貸款，請洽學生事務處。", "學雜費,學費,雜費,繳費,減免,學貸,貸款,就學貸款,低收入戶"],
     ["畢業門檻", "畢業門檻：\n- 學分要求:128學分\n- 必修與通識課程\n- 實習要求\n- 外語學習成就評量\n詳情：\n<a href='https://www.cute.edu.tw/~gec/intro/student.html' target='_blank'>學生專區</a>", "畢業,畢業門檻,學分,必修,通識,實習,證照,語言能力"],
     ["學校地址", "校區地址：\n- 台北校區：台北市文山區興隆路三段56號（捷運萬芳醫院站步行5分鐘）\n- 新竹校區：新竹縣湖口鄉中山路三段530號（台鐵北湖車站步行5分鐘）\n交通資訊：<a href='https://recruit.cute.edu.tw/university_exposition/transportation/' target='_blank'>點我查看</a>", "地址,交通,地圖,周邊,捷運,公車,位置"],
