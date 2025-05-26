@@ -356,6 +356,27 @@
         function getResponse(input) {
             try {
                 const cleaned = input.trim().toLowerCase();
+                
+                // 处理数字输入
+                const num = parseInt(cleaned);
+                if (!isNaN(num) && num >= 1 && num <= 12) {
+                    const responses = [
+                        "入學相關",
+                        "系所相關",
+                        "住宿相關",
+                        "學務相關",
+                        "學習資源",
+                        "考試時間",
+                        "學校設施",
+                        "學雜費",
+                        "畢業門檻",
+                        "學校地址",
+                        "開學結業",
+                        "選課相關"
+                    ];
+                    return CHATBOT_RESPONSES.find(([key]) => key === responses[num - 1])[1];
+                }
+
                 const words = cleaned.split(/[\s,，]+/);
                 const scores = CHATBOT_RESPONSES.map(([k, r, rel]) => {
                     let score = cleaned === k.toLowerCase() ? 100 : 0;
@@ -370,7 +391,7 @@
                 });
                 const best = scores.reduce((a, b) => b.score > a.score ? b : a, { response: '', score: 0 });
                 return best.score >= 30 ? best.response : 
-                    "🤔 抱歉我不太明白您的意思，您可以問：\n- 入學資訊\n- 系所介紹\n- 住宿申請\n- 學務相關\n- 學習資源\n- 考試時間\n- 設施位置\n- 開學結業\n- 學雜費\n- 畢業門檻\n- 學校地址";
+                    "🤔 抱歉我不太明白您的意思，您可以問：\n- 入學資訊\n- 系所介紹\n- 住宿申請\n- 學務相關\n- 學習資源\n- 考試時間\n- 設施位置\n- 開學結業\n- 學雜費\n- 畢業門檻\n- 學校地址\n- 選課相關";
             } catch (error) {
                 console.error('Error in getResponse:', error);
                 return "抱歉，系統發生錯誤，請稍後再試。";
