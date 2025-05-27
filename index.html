@@ -290,7 +290,7 @@
             const newX = initialX + deltaX;
             const newY = initialY + deltaY;
             
-            // 确保不会超出屏幕边界
+            // 確保不會超出屏幕邊界
             const rect = chatbot.getBoundingClientRect();
             const maxX = window.innerWidth - rect.width;
             const maxY = window.innerHeight - rect.height;
@@ -304,7 +304,7 @@
             chatbot.style.bottom = 'auto';
         }
 
-        // 添加事件监听器
+        // 添加事件監聽器
         header.addEventListener("mousedown", dragStart);
         header.addEventListener("touchstart", dragStart);
         
@@ -357,7 +357,7 @@
             try {
                 const cleaned = input.trim().toLowerCase();
                 
-                // 处理数字输入
+                // 處理數字輸入
                 const num = parseInt(cleaned);
                 if (!isNaN(num) && num >= 1 && num <= 12) {
                     const responses = [
