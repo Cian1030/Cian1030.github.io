@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>長輩大腦活化遊戲</title>
+    <title>長輩大腦活化遊戲 - 動態方格版</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header class="game-header">
     <img src="附圖二.jpeg" alt="排行榜" class="icon-btn-hamburger" onclick="toggleSidebar()">
-    
     <div id="auth-area">
         <img src="附圖一.jpeg" alt="登入" class="icon-btn-login" id="login-trigger" onclick="openLoginModal()">
         <div id="user-display" class="user-info" style="display:none;">
@@ -25,15 +24,11 @@
         <h2>🏆 榮譽排行榜</h2>
         <table id="leaderboard-table">
             <thead>
-              <tr>
-                <th>名次</th>
-                <th>姓名</th>
-                <th>分數</th>
-                <th>反應(s)</th>
-                <th>管理</th> </tr>
+                <tr>
+                    <th>名次</th><th>姓名</th><th>分數</th><th>速度</th><th>管理</th>
+                </tr>
             </thead>
-            <tbody id="leaderboard-body">
-                </tbody>
+            <tbody id="leaderboard-body"></tbody>
         </table>
         <button class="btn-primary full-width" onclick="toggleSidebar()">關閉</button>
     </div>
@@ -42,31 +37,29 @@
 <div class="modal" id="login-modal">
     <div class="modal-content">
         <h2>玩家登錄</h2>
-        <p>請輸入姓名開始訓練</p>
-        <input type="text" id="username-input" placeholder="例如：王小明">
+        <input type="text" id="username-input" placeholder="輸入姓名">
         <button class="btn-primary" onclick="handleLogin()">進入遊戲</button>
     </div>
 </div>
 
 <main class="game-container">
     <div class="stats-panel">
-        <div class="stat-box">分數: <span id="score">0</span></div>
-        <div class="stat-box">關卡: <span id="level">1</span></div>
-        <div class="stat-box">平均反應: <span id="reaction">0.00</span>s</div>
+        <div class="stat-box">得分: <span id="score">0</span></div>
+        <div class="stat-box">模式: <span id="diff-text">簡單(3x3)</span></div>
+        <div class="stat-box">速度: <span id="reaction">0.00</span>s</div>
     </div>
 
     <div class="difficulty-options">
-        <button class="diff-btn active" data-level="easy">簡單</button>
-        <button class="diff-btn" data-level="medium">普通</button>
-        <button class="diff-btn" data-level="hard">困難</button>
+        <button class="diff-btn active" data-level="easy">簡單 (3x3)</button>
+        <button class="diff-btn" data-level="medium">普通 (4x4)</button>
+        <button class="diff-btn" data-level="hard">困難 (5x5)</button>
     </div>
 
-    <div class="led-grid" id="led-grid">
-        </div>
+    <div class="led-grid" id="led-grid"></div>
 
     <div class="control-area">
         <button id="start-btn" class="btn-start" onclick="startGame()">開始挑戰</button>
-        <p id="system-msg">請先點擊右上角登錄！</p>
+        <p id="system-msg">請先登錄後選擇難度！</p>
     </div>
 </main>
 
