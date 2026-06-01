@@ -4,9 +4,9 @@
     --led-on: #f1c40f;
     --success: #27ae60;
     --bg-light: #f5f6fa;
-    --nav-bg: #eddcc4;       /* 米黃色溫和底色 */
-    --panel-bg: #ebdcb9;     /* 難度控制面板專用米黃底色 */
-    --theme-coral: #df5645;  /* 參考附圖標準難度的紅橙色 */
+    --nav-bg: #eddcc4;       
+    --panel-bg: #ebdcb9;     
+    --theme-coral: #df5645;  
 }
 
 body {
@@ -15,7 +15,7 @@ body {
     margin: 0; padding-top: 85px; min-height: 100vh;
 }
 
-/* ================= 複合導覽列架構 ================= */
+/* ================= 導覽列 ================= */
 .game-header {
     position: fixed; top: 0; left: 0; width: 100%; height: 75px;
     background-color: var(--nav-bg); box-shadow: 0 2px 10px rgba(0,0,0,0.05);
@@ -28,7 +28,6 @@ body {
     color: #444; cursor: pointer; padding: 8px 16px; transition: 0.2s;
 }
 .nav-link:hover, .nav-link.active { color: #b04118; }
-
 .nav-dropdown { position: relative; display: inline-block; }
 .dropdown-content {
     display: none; position: absolute; background-color: white;
@@ -45,7 +44,7 @@ body {
 .icon-btn-hamburger { width: 42px; cursor: pointer; }
 .icon-btn-login { height: 42px; border-radius: 5px; cursor: pointer; }
 
-/* ================= 頁面基礎路由動畫 ================= */
+/* ================= 頁面基礎路由 ================= */
 .page-section { display: none; padding: 20px; animation: pageFade 0.3s ease-in-out; }
 .page-section.active { display: block; }
 @keyframes pageFade { from { opacity: 0; } to { opacity: 1; } }
@@ -55,20 +54,18 @@ body {
 .concept-box { background: white; padding: 25px; border-radius: 15px; text-align: left; box-shadow: 0 4px 12px rgba(0,0,0,0.03); margin-bottom: 30px; }
 .game-menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
 .game-card-entry { background: white; padding: 25px; border-radius: 15px; text-align: left; box-shadow: 0 6px 18px rgba(0,0,0,0.03); cursor: pointer; }
-.game-card-entry:hover { transform: translateY(-2px); }
 .badge { background: #3498db; color: white; padding: 4px 8px; font-size: 0.8rem; border-radius: 4px; display: inline-block; }
 .badge-new { background: #e67e22; color: white; padding: 4px 8px; font-size: 0.8rem; border-radius: 4px; display: inline-block; }
 .entry-btn { display: inline-block; margin-top: 15px; color: #b04118; font-weight: bold; }
 
-/* ================= 遊戲主外殼 ================= */
+/* ================= 遊戲核心控制面板 ================= */
 .game-container {
     background: white; padding: 25px; border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center;
     width: 95%; max-width: 520px; margin: 10px auto;
 }
-.wide-game-container { max-width: 780px; }
+.wide-game-container { max-width: 850px; } /* 稍微加寬容納 9 欄 */
 
-/* 參考附圖一：統一的頂部數據與重來狀態列 */
 .moves-counter-bar {
     background-color: var(--panel-bg); border-radius: 12px;
     display: flex; justify-content: space-between; align-items: center;
@@ -81,7 +78,6 @@ body {
 .refresh-action-btn { font-size: 1.6rem; cursor: pointer; user-select: none; transition: transform 0.2s; }
 .refresh-action-btn:hover { transform: rotate(-45deg); }
 
-/* 參考附圖二：精準統一的米黃色難度選擇區 */
 .board-size-selection {
     text-align: left; margin-bottom: 20px;
     background-color: var(--panel-bg); padding: 18px; border-radius: 12px;
@@ -90,9 +86,8 @@ body {
 .settings-gear-icon { font-size: 1.3rem; color: #333; }
 .board-size-selection h3 { margin: 0; font-size: 1.1rem; color: #222; font-weight: bold; }
 
-/* 按鈕群組排版 */
 .size-buttons-group { display: flex; flex-wrap: wrap; gap: 10px; }
-.grid-3-cols .size-btn { flex: 1; min-width: 30%; } /* 遊戲一3個按鈕平均分配 */
+.grid-3-cols .size-btn { flex: 1; min-width: 30%; }
 
 .size-btn {
     flex: 1; min-width: 110px; background: rgba(255,255,255,0.6); border: none;
@@ -101,12 +96,10 @@ body {
 }
 .size-btn .title { font-size: 1rem; font-weight: bold; color: #222; margin-bottom: 3px; }
 .size-btn .desc { font-size: 0.8rem; color: #555; }
-
-/* 啟用紅橙色高亮狀態 (附圖二特徵) */
 .size-btn.active { background-color: var(--theme-coral); box-shadow: 0 4px 10px rgba(223,86,69,0.3); }
 .size-btn.active .title, .size-btn.active .desc { color: white; }
 
-/* ================= 遊戲一與二：網格元件 ================= */
+/* ================= 網格佈局與卡牌防護 ================= */
 .led-grid { display: grid; gap: 12px; margin: 15px auto; max-width: 400px; }
 .led { aspect-ratio: 1; background-color: var(--led-off); border-radius: 12px; border: 4px solid #222; cursor: pointer; }
 .led.active { background-color: var(--led-on); box-shadow: 0 0 20px var(--led-on); }
@@ -115,20 +108,19 @@ body {
 .game-card {
     aspect-ratio: 1; background-color: #2c3e50; border-radius: 8px;
     display: flex; justify-content: center; align-items: center;
-    font-size: 1.8rem; color: transparent; cursor: pointer; user-select: none;
+    font-size: calc(1.2rem + 0.6vw); color: transparent; cursor: pointer; user-select: none;
     border: 2px solid #fff; box-shadow: 0 3px 6px rgba(0,0,0,0.08);
     transition: transform 0.15s;
 }
 .game-card.flipped { background-color: #fff; color: #333; border-color: #2c3e50; }
 .game-card.matched { background-color: #2ecc71; color: white; border-color: #2ecc71; opacity: 0.45; pointer-events: none; }
 
-/* 底層元件 */
+/* 其他輔助組件 */
 .btn-primary { padding: 12px 30px; background: var(--success); color: white; border: none; border-radius: 8px; cursor: pointer; }
 .btn-start { padding: 12px 50px; font-size: 1.3rem; background: var(--primary-dark); color: white; border: none; border-radius: 50px; cursor: pointer; }
 .btn-start:disabled { background: #ccc; cursor: not-allowed; }
 .btn-delete { background: #ff4757; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
 .full-width { width: 100%; margin-top: 15px; }
-
 .sidebar { position: fixed; top: 0; left: -350px; width: 320px; height: 100%; background: white; box-shadow: 5px 0 15px rgba(0,0,0,0.15); transition: 0.4s; z-index: 500; padding: 25px; box-sizing: border-box; }
 .sidebar.open { left: 0; }
 .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }

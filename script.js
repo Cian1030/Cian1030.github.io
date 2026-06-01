@@ -1,4 +1,4 @@
-// ==================== 多網頁路由切換中心 ====================
+// ==================== 頁面路由中心 ====================
 function switchPage(pageId) {
     document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
@@ -6,12 +6,11 @@ function switchPage(pageId) {
     const target = document.getElementById(`page-${pageId}`);
     if (target) target.classList.add('active');
 
-    // 路由載入安全防護
     if (pageId === 'game-led') initLedGrid(ledDiffConfig[ledDifficulty].size);
     if (pageId === 'game-card') initCardGrid();
 }
 
-// ==================== 共享管理 (登錄與跨遊戲排行系統) ====================
+// ==================== 系統管理 (登錄、排行) ====================
 let currentUser = null;
 
 function toggleSidebar() {
@@ -28,7 +27,7 @@ function handleLogin() {
     currentUser = name;
     document.getElementById('login-trigger').style.display = 'none';
     document.getElementById('user-display').style.display = 'block';
-    document.getElementById('display-name').innerText = `目前長輩: ${name}`;
+    document.getElementById('display-name').innerText = `目前玩家: ${name}`;
     document.getElementById('login-modal').style.display = 'none';
     document.getElementById('led-system-msg').innerText = "登錄完成！請點擊下方按鈕開始。";
     document.getElementById('card-system-msg').innerText = "登錄完成！請選擇大小並點擊開始。";
@@ -65,7 +64,7 @@ function deleteRecord(index) {
     renderLeaderboard();
 }
 
-// ==================== 遊戲一：閃爍記憶球 (保持原設定) ====================
+// ==================== 遊戲一：閃爍記憶球 ====================
 let ledSequence = [], ledPlayerSequence = [], ledScore = 0;
 let ledDifficulty = 'easy', ledIsShowing = false, ledReactionTimes = [], ledStepStartTime = 0, ledRoundLength = 0, ledCurrentSpeed = 0;
 
@@ -97,9 +96,7 @@ function changeLedDifficulty(diff, btn) {
 }
 
 function resetLedGame() {
-    ledSequence = [];
-    ledPlayerSequence = [];
-    ledIsShowing = false;
+    ledSequence = []; ledPlayerSequence = []; ledIsShowing = false;
     document.getElementById('led-score').innerText = "0";
     document.getElementById('led-reaction').innerText = "0.00";
     document.getElementById('led-start-btn').disabled = false;
@@ -163,11 +160,17 @@ function handleLedInput(index) {
     }
 }
 
-// ==================== 遊戲二：記憶對對碰 (保持原設定) ====================
+// ==================== 遊戲二：記憶對對碰 ====================
 let cardDifficulty = 'standard';
 let cardIconsData = [], cardFlippedUnits = [], cardMatchedCount = 0, cardTotalMoves = 0, cardIsLocking = false;
 
-const baseIconSet = ['🍎', '🍌', '🚗', '🐱', '🐶', '☀️', '🌙', '🌟', '🍀', '🍇', '🎈', '🐟', '⏰', '🌸', '🦊', '🦉', '⚽', '🥕', '🍦', '🎁', '🔔', '🚀', '⚓', '🚲', '🎸', '🎨'];
+// 修正關鍵：擴張到 30 個以上的高品質水果及生活化圖案，完全填滿 6x9 (27對) 的需求
+const baseIconSet = [
+    '🍎', '🍌', '🚗', '🐱', '🐶', '☀️', '🌙', '🌟', '🍀', '🍇', 
+    '🎈', '🐟', '⏰', '🌸', '🦊', '🦉', '⚽', '🥕', '🍦', '🎁', 
+    '🔔', '🚀', '⚓', '🚲', '🎸', '🎨', '🍍', '🍓', '🍉', '🦆',
+    '🦁', '🐼', '🌻', '✈️', '💎'
+];
 
 const cardDiffConfig = {
     novice:   { cols: 4, rows: 3, pairs: 6,  label: "新手" },
@@ -207,8 +210,11 @@ function startCardGame() {
     document.getElementById('card-system-msg').innerText = "洗牌完畢，請點擊翻牌。";
 
     const cfg = cardDiffConfig[cardDifficulty];
+    // 提取出當前難度所需的成對數量
     let selectedIcons = baseIconSet.slice(0, cfg.pairs);
     let doublePack = [...selectedIcons, ...selectedIcons];
+    
+    // 高效洗牌
     doublePack.sort(() => Math.random() - 0.5);
     cardIconsData = doublePack;
 
@@ -250,7 +256,6 @@ function checkCardMatch() {
 
         if (cardMatchedCount === cardDiffConfig[cardDifficulty].pairs) {
             alert(`全數配對成功！\n共花費了：${cardTotalMoves} 步！`);
-            // 計算一個正向分數存入排行 (翻牌總數 / 長輩總步數 * 100)
             let scoreCalculated = Math.round((cardMatchedCount * 2) / cardTotalMoves * 100);
             saveRecord(`記憶對對碰(${cardDifficulty})`, scoreCalculated);
             document.getElementById('card-start-btn').disabled = false;
@@ -264,7 +269,6 @@ function checkCardMatch() {
     }
 }
 
-// 預設初始化
 window.onload = () => {
     initLedGrid(3);
     initCardGrid();
