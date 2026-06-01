@@ -3,13 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>銀髮族大腦活化與專注力訓練系統</title>
+    <title>銀髮族大腦活化與專注力訓練遊戲</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header class="game-header">
-    <img src="附圖二.jpeg" alt="排行榜" class="icon-btn-hamburger" onclick="toggleSidebar()">
+    <div class="left-action-area">
+        <button class="nav-link text-leaderboard" onclick="toggleSidebar()">🏆 排行榜</button>
+    </div>
     
     <nav class="center-nav">
         <button class="nav-link active" onclick="switchPage('home')">首頁</button>
@@ -38,7 +40,11 @@
         <table id="leaderboard-table">
             <thead>
                 <tr>
-                    <th>名次</th><th>姓名</th><th>項目指標</th><th>核心成績</th><th>管理</th>
+                    <th>名次</th>
+                    <th>姓名</th>
+                    <th>訓練項目</th>
+                    <th>挑戰難度</th> <th>核心成績</th>
+                    <th>管理</th>
                 </tr>
             </thead>
             <tbody id="leaderboard-body"></tbody>
@@ -50,7 +56,7 @@
 <div class="modal" id="login-modal">
     <div class="modal-content">
         <h2>玩家登錄</h2>
-        <input type="text" id="username-input" placeholder="輸入姓名">
+        <input type="text" id="username-input" placeholder="輸入玩家姓名">
         <button class="btn-primary" onclick="handleLogin()">進入系統</button>
     </div>
 </div>
@@ -58,7 +64,7 @@
 
 <section id="page-home" class="page-section active">
     <div class="hero-container">
-        <h1>銀髮族大腦活化與專注力訓練遊戲</h1>
+        <h1>銀髮大腦活化與專注力訓練系統</h1>
         <p class="subtitle">活化銀髮思維 ‧ 預防認知退化 ‧ 訓練手眼協調</p>
         
         <div class="concept-box">
@@ -134,7 +140,6 @@
         </div>
 
         <div class="led-grid" id="led-grid"></div>
-        
         <div class="control-area">
             <button id="led-start-btn" class="btn-start" onclick="startLedGame()">開始挑戰</button>
             <p id="led-system-msg">登錄後即可開始訓練！</p>
@@ -182,9 +187,8 @@
         </div>
 
         <div class="card-grid" id="card-grid"></div>
-        
         <div class="control-area">
-            <button id="card-start-btn" class="btn-start" onclick="startCardGame()">開始洗牌</button>
+            <button id="card-start-btn" class="btn-start" onclick="startCardGame()">開始遊戲</button>
             <p id="card-system-msg">請選擇版面大小並點擊開始！</p>
         </div>
     </div>

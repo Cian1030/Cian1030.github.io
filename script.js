@@ -10,7 +10,7 @@ function switchPage(pageId) {
     if (pageId === 'game-card') initCardGrid();
 }
 
-// ==================== 系統管理 (登錄、排行) ====================
+// ==================== 系統管理 (登錄、升級排行) ====================
 let currentUser = null;
 
 function toggleSidebar() {
@@ -35,22 +35,31 @@ function handleLogin() {
 
 function logout() { location.reload(); }
 
-function saveRecord(gameLabel, scoreValue) {
-    let db = JSON.parse(localStorage.getItem('elderly_unified_db_v5')) || [];
-    db.push({ name: currentUser, game: gameLabel, score: scoreValue, date: new Date().toLocaleDateString() });
-    db.sort((a, b) => b.score - a.score);
-    localStorage.setItem('elderly_unified_db_v5', JSON.stringify(db.slice(0, 20)));
+// 儲存核心：新增難度參數 (diffLabel)
+function saveRecord(gameLabel, diffLabel, scoreValue) {
+    let db = JSON.parse(localStorage.getItem('elderly_unified_db_v6')) || [];
+    db.push({ 
+        name: currentUser, 
+        game: gameLabel, 
+        difficulty: diffLabel, // 新增屬性
+        score: scoreValue, 
+        date: new Date().toLocaleDateString() 
+    });
+    db.sort((a, b) => b.score - a.score); // 依分數高低排序
+    localStorage.setItem('elderly_unified_db_v6', JSON.stringify(db.slice(0, 20)));
 }
 
+// 渲染排行榜：加入難度欄位展示
 function renderLeaderboard() {
-    const db = JSON.parse(localStorage.getItem('elderly_unified_db_v5')) || [];
+    const db = JSON.parse(localStorage.getItem('elderly_unified_db_v6')) || [];
     const tbody = document.getElementById('leaderboard-body');
     tbody.innerHTML = db.map((item, i) => `
         <tr>
             <td>${i + 1}</td>
             <td>${item.name}</td>
             <td>${item.game}</td>
-            <td><strong>${item.score}</strong> 分/關</td>
+            <td><span class="badge" style="background:#e67e22;">${item.difficulty || '未指定'}</span></td>
+            <td><strong>${item.score}</strong></td>
             <td><button class="btn-delete" onclick="deleteRecord(${i})">刪除</button></td>
         </tr>
     `).join('');
@@ -58,9 +67,9 @@ function renderLeaderboard() {
 
 function deleteRecord(index) {
     if (!confirm("確定刪除此訓練紀錄嗎？")) return;
-    let db = JSON.parse(localStorage.getItem('elderly_unified_db_v5')) || [];
+    let db = JSON.parse(localStorage.getItem('elderly_unified_db_v6')) || [];
     db.splice(index, 1);
-    localStorage.setItem('elderly_unified_db_v5', JSON.stringify(db));
+    localStorage.setItem('elderly_unified_db_v6', JSON.stringify(db));
     renderLeaderboard();
 }
 
@@ -69,9 +78,9 @@ let ledSequence = [], ledPlayerSequence = [], ledScore = 0;
 let ledDifficulty = 'easy', ledIsShowing = false, ledReactionTimes = [], ledStepStartTime = 0, ledRoundLength = 0, ledCurrentSpeed = 0;
 
 const ledDiffConfig = {
-    easy: { size: 3, startLen: 3, speed: 1000, label: "簡單(3x3)" },
-    medium: { size: 4, startLen: 4, speed: 800, label: "普通(4x4)" },
-    hard: { size: 5, startLen: 5, speed: 600, label: "困難(5x5)" }
+    easy: { size: 3, startLen: 3, speed: 1000, label: "簡單" },
+    medium: { size: 4, startLen: 4, speed: 800, label: "普通" },
+    hard: { size: 5, startLen: 5, speed: 600, label: "困難" }
 };
 
 function initLedGrid(size) {
@@ -154,7 +163,8 @@ function handleLedInput(index) {
         }
     } else {
         alert(`判定按錯囉！\n最終得分：${ledScore}關`);
-        saveRecord(`閃爍記憶球(${ledDifficulty})`, ledScore);
+        // 傳入難度文字
+        saveRecord("閃爍記憶球", ledDiffConfig[ledDifficulty].label, `${ledScore} 關`);
         document.getElementById('led-start-btn').disabled = false;
         ledSequence = [];
     }
@@ -164,7 +174,6 @@ function handleLedInput(index) {
 let cardDifficulty = 'standard';
 let cardIconsData = [], cardFlippedUnits = [], cardMatchedCount = 0, cardTotalMoves = 0, cardIsLocking = false;
 
-// 修正關鍵：擴張到 30 個以上的高品質水果及生活化圖案，完全填滿 6x9 (27對) 的需求
 const baseIconSet = [
     '🍎', '🍌', '🚗', '🐱', '🐶', '☀️', '🌙', '🌟', '🍀', '🍇', 
     '🎈', '🐟', '⏰', '🌸', '🦊', '🦉', '⚽', '🥕', '🍦', '🎁', 
@@ -210,11 +219,9 @@ function startCardGame() {
     document.getElementById('card-system-msg').innerText = "洗牌完畢，請點擊翻牌。";
 
     const cfg = cardDiffConfig[cardDifficulty];
-    // 提取出當前難度所需的成對數量
     let selectedIcons = baseIconSet.slice(0, cfg.pairs);
     let doublePack = [...selectedIcons, ...selectedIcons];
     
-    // 高效洗牌
     doublePack.sort(() => Math.random() - 0.5);
     cardIconsData = doublePack;
 
@@ -256,8 +263,8 @@ function checkCardMatch() {
 
         if (cardMatchedCount === cardDiffConfig[cardDifficulty].pairs) {
             alert(`全數配對成功！\n共花費了：${cardTotalMoves} 步！`);
-            let scoreCalculated = Math.round((cardMatchedCount * 2) / cardTotalMoves * 100);
-            saveRecord(`記憶對對碰(${cardDifficulty})`, scoreCalculated);
+            // 儲存至排行榜：傳入對對碰、目前難度中文標籤、花費步數
+            saveRecord("記憶對對碰", cardDiffConfig[cardDifficulty].label, `${cardTotalMoves} 步`);
             document.getElementById('card-start-btn').disabled = false;
         }
     } else {
