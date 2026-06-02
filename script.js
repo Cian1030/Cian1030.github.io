@@ -1,0 +1,305 @@
+// ==================== 頁面路由中心 ====================
+function switchPage(pageId) {
+    document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+
+    const target = document.getElementById(`page-${pageId}`);
+    if (target) target.classList.add('active');
+
+    if (pageId === 'game-led') initLedGrid(ledDiffConfig[ledDifficulty].size);
+    if (pageId === 'game-card') initCardGrid();
+}
+
+// ==================== 系統管理（最優成績排序優化） ====================
+let currentUser = null;
+
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('open');
+    if (sidebar.classList.contains('open')) renderLeaderboard();
+}
+
+function openLoginModal() { document.getElementById('login-modal').style.display = 'flex'; }
+
+function handleLogin() {
+    const name = document.getElementById('username-input').value.trim();
+    if (!name) return alert("請輸入玩家姓名");
+    currentUser = name;
+    document.getElementById('login-trigger').style.display = 'none';
+    document.getElementById('user-display').style.display = 'block';
+    document.getElementById('display-name').innerText = `目前玩家: ${name}`;
+    document.getElementById('login-modal').style.display = 'none';
+    document.getElementById('led-system-msg').innerText = "登錄完成！請點擊下方按鈕開始。";
+    document.getElementById('card-system-msg').innerText = "登錄完成！請選擇大小並點擊開始。";
+}
+
+function logout() { location.reload(); }
+
+// 儲存核心：型態統一轉為純數字儲存，方便進行數學排序
+function saveRecord(gameLabel, diffLabel, scoreNumeric, displayStr) {
+    let db = JSON.parse(localStorage.getItem('elderly_intelligent_db_v7')) || [];
+    db.push({ 
+        name: currentUser, 
+        game: gameLabel, 
+        difficulty: diffLabel, 
+        rawScore: scoreNumeric, // 用於排序的純數字
+        displayScore: displayStr // 用於顯示的文字（例如："5關", "24步"）
+    });
+
+    // 智能排序演算法：記憶球比高（大到小）；對對碰比少（小到大）
+    db.sort((a, b) => {
+        if (a.game !== b.game) {
+            return a.game.localeCompare(b.game); // 依遊戲項目先分組
+        }
+        if (a.game === "閃爍記憶球") {
+            return b.rawScore - a.rawScore; // 記憶球：關卡越高越前面
+        } else {
+            return a.rawScore - b.rawScore; // 記憶對對碰：步數越少越前面（最優成績）
+        }
+    });
+
+    localStorage.setItem('elderly_intelligent_db_v7', JSON.stringify(db.slice(0, 20)));
+}
+
+function renderLeaderboard() {
+    const db = JSON.parse(localStorage.getItem('elderly_intelligent_db_v7')) || [];
+    const tbody = document.getElementById('leaderboard-body');
+    tbody.innerHTML = db.map((item, i) => `
+        <tr>
+            <td>${i + 1}</td>
+            <td>${item.name}</td>
+            <td>${item.game}</td>
+            <td><span class="badge" style="background:#e67e22;">${item.difficulty}</span></td>
+            <td><strong>${item.displayScore}</strong></td>
+            <td><button class="btn-delete" onclick="deleteRecord(${i})">刪除</button></td>
+        </tr>
+    `).join('');
+}
+
+function deleteRecord(index) {
+    if (!confirm("確定刪除此訓練紀錄嗎？")) return;
+    let db = JSON.parse(localStorage.getItem('elderly_intelligent_db_v7')) || [];
+    db.splice(index, 1);
+    localStorage.setItem('elderly_intelligent_db_v7', JSON.stringify(db));
+    renderLeaderboard();
+}
+
+// ==================== 遊戲一：閃爍記憶球 ====================
+let ledSequence = [], ledPlayerSequence = [], ledScore = 0;
+let ledDifficulty = 'easy', ledIsShowing = false, ledReactionTimes = [], ledStepStartTime = 0, ledRoundLength = 0, ledCurrentSpeed = 0;
+
+const ledDiffConfig = {
+    easy: { size: 3, startLen: 3, speed: 1000, label: "簡單" },
+    medium: { size: 4, startLen: 4, speed: 800, label: "普通" },
+    hard: { size: 5, startLen: 5, speed: 600, label: "困難" }
+};
+
+function initLedGrid(size) {
+    const container = document.getElementById('led-grid');
+    container.innerHTML = '';
+    container.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+    for (let i = 0; i < size * size; i++) {
+        const led = document.createElement('div');
+        led.className = 'led';
+        led.onclick = () => handleLedInput(i);
+        container.appendChild(led);
+    }
+}
+
+function changeLedDifficulty(diff, btn) {
+    if (document.getElementById('led-start-btn').disabled) return;
+    ledDifficulty = diff;
+    document.getElementById('led-diff-text').innerText = ledDiffConfig[diff].label;
+    document.querySelectorAll('#page-game-led .size-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    initLedGrid(ledDiffConfig[diff].size);
+}
+
+function resetLedGame() {
+    ledSequence = []; ledPlayerSequence = []; ledIsShowing = false;
+    document.getElementById('led-score').innerText = "0";
+    document.getElementById('led-reaction').innerText = "0.00";
+    document.getElementById('led-start-btn').disabled = false;
+    document.getElementById('led-system-msg').innerText = "已重置。請點擊開始挑戰。";
+    initLedGrid(ledDiffConfig[ledDifficulty].size);
+}
+
+async function startLedGame() {
+    if (!currentUser) return openLoginModal();
+    ledScore = 0; ledReactionTimes = [];
+    ledRoundLength = ledDiffConfig[ledDifficulty].startLen;
+    ledCurrentSpeed = ledDiffConfig[ledDifficulty].speed;
+    document.getElementById('led-score').innerText = "0";
+    document.getElementById('led-reaction').innerText = "0.00";
+    document.getElementById('led-start-btn').disabled = true;
+    nextLedRound();
+}
+
+async function nextLedRound() {
+    ledPlayerSequence = []; ledSequence = []; ledIsShowing = true;
+    document.getElementById('led-system-msg').innerText = "仔細觀察亮燈...";
+    const total = ledDiffConfig[ledDifficulty].size * ledDiffConfig[ledDifficulty].size;
+    for (let i = 0; i < ledRoundLength; i++) ledSequence.push(Math.floor(Math.random() * total));
+
+    const leds = document.querySelectorAll('.led');
+    for (let idx of ledSequence) {
+        if (leds[idx]) {
+            leds[idx].classList.add('active');
+            await new Promise(r => setTimeout(r, ledCurrentSpeed));
+            leds[idx].classList.remove('active');
+            await new Promise(r => setTimeout(r, 200));
+        }
+    }
+    ledIsShowing = false;
+    document.getElementById('led-system-msg').innerText = "換您依序點擊！";
+    ledStepStartTime = Date.now();
+}
+
+function handleLedInput(index) {
+    if (ledIsShowing || ledSequence.length === 0) return;
+    if (index === ledSequence[ledPlayerSequence.length]) {
+        ledReactionTimes.push((Date.now() - ledStepStartTime) / 1000);
+        document.getElementById('led-reaction').innerText = (ledReactionTimes.reduce((a,b)=>a+b,0)/ledReactionTimes.length).toFixed(3);
+        
+        const leds = document.querySelectorAll('.led');
+        leds[index].classList.add('active'); setTimeout(() => leds[index].classList.remove('active'), 150);
+
+        ledPlayerSequence.push(index); ledStepStartTime = Date.now();
+        if (ledPlayerSequence.length === ledSequence.length) {
+            ledScore++; document.getElementById('led-score').innerText = ledScore;
+            if (ledRoundLength < 10) ledRoundLength++;
+            else ledCurrentSpeed = Math.max(250, Math.floor(ledCurrentSpeed * 0.9));
+            document.getElementById('led-system-msg').innerText = "過關！準備下一波...";
+            setTimeout(nextLedRound, 1200);
+        }
+    } else {
+        alert(`判定按錯囉！\n最終得分：${ledScore}關`);
+        saveRecord("閃爍記憶球", ledDiffConfig[ledDifficulty].label, ledScore, `${ledScore} 關`);
+        document.getElementById('led-start-btn').disabled = false;
+        ledSequence = [];
+    }
+}
+
+// ==================== 遊戲二：記憶對對碰 ====================
+let cardDifficulty = 'standard';
+let cardIconsData = [], cardFlippedUnits = [], cardMatchedCount = 0, cardTotalMoves = 0, cardIsLocking = false;
+
+// 擴張至 40 個不重複圖案，完美支援 8x8=64 (32對) 的需求
+const baseIconSet = [
+    '🍎', '🍌', '🚗', '🐱', '🐶', '☀️', '🌙', '🌟', '🍀', '🍇', 
+    '🎈', '🐟', '⏰', '🌸', '🦊', '🦉', '⚽', '🥕', '🍦', '🎁', 
+    '🔔', '🚀', '⚓', '🚲', '🎸', '🎨', '🍍', '🍓', '🍉', '🦆',
+    '🦁', '🐼', '🌻', '✈️', '💎', '🍿', '🍩', '🦊', '🦀', '🐢'
+];
+
+// 升級設定：專家改 7x7，大師改 8x8
+const cardDiffConfig = {
+    novice:   { cols: 4, rows: 3, pairs: 6,  label: "新手" },
+    casual:   { cols: 4, rows: 4, pairs: 8,  label: "休閒" },
+    standard: { cols: 6, rows: 6, pairs: 18, label: "標準" },
+    expert:   { cols: 7, rows: 7, pairs: 24, label: "專家" }, // 7x7=49 24對 + 1張落單卡
+    master:   { cols: 8, rows: 8, pairs: 32, label: "大師" }  // 8x8=64 32對
+};
+
+function initCardGrid() {
+    const cfg = cardDiffConfig[cardDifficulty];
+    const container = document.getElementById('card-grid');
+    container.innerHTML = '';
+    container.style.gridTemplateColumns = `repeat(${cfg.cols}, 1fr)`;
+
+    for (let i = 0; i < cfg.cols * cfg.rows; i++) {
+        const card = document.createElement('div');
+        card.className = 'game-card';
+        card.innerText = '？';
+        container.appendChild(card);
+    }
+}
+
+function changeCardDifficulty(diff, btn) {
+    cardDifficulty = diff;
+    document.querySelectorAll('#page-game-card .size-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    initCardGrid();
+    document.getElementById('card-start-btn').disabled = false;
+}
+
+function startCardGame() {
+    if (!currentUser) return openLoginModal();
+    cardTotalMoves = 0; cardMatchedCount = 0; cardFlippedUnits = []; cardIsLocking = false;
+    document.getElementById('card-moves').innerText = "0";
+    document.getElementById('card-start-btn').disabled = true;
+    document.getElementById('card-system-msg').innerText = "洗牌完畢，請點擊翻牌。";
+
+    const cfg = cardDiffConfig[cardDifficulty];
+    let selectedIcons = baseIconSet.slice(0, cfg.pairs);
+    let doublePack = [...selectedIcons, ...selectedIcons];
+    
+    doublePack.sort(() => Math.random() - 0.5);
+
+    // 特殊防護：針對 7x7 = 49 張牌（奇數面），塞入一張不計分也不可翻的落單功能牌，確保排版完美不破洞
+    if (cfg.cols * cfg.rows % 2 !== 0) {
+        doublePack.push('☕'); // 額外加入第 49 張
+    }
+    cardIconsData = doublePack;
+
+    const container = document.getElementById('card-grid');
+    container.innerHTML = '';
+    cardIconsData.forEach((icon, i) => {
+        const card = document.createElement('div');
+        
+        if (icon === '☕' && cardDifficulty === 'expert') {
+            card.className = 'game-card dummy';
+            card.innerText = '☕'; // 7x7落單休息卡，直接常駐明牌顯示，不參與翻牌消除
+        } else {
+            card.className = 'game-card';
+            card.dataset.icon = icon;
+            card.innerText = '？';
+            card.onclick = () => triggerFlip(card);
+        }
+        container.appendChild(card);
+    });
+}
+
+function triggerFlip(card) {
+    if (cardIsLocking || card.classList.contains('flipped') || card.classList.contains('matched')) return;
+
+    card.classList.add('flipped');
+    card.innerText = card.dataset.icon;
+    cardFlippedUnits.push(card);
+
+    if (cardFlippedUnits.length === 2) {
+        cardTotalMoves++;
+        document.getElementById('card-moves').innerText = cardTotalMoves;
+        cardIsLocking = true;
+        checkCardMatch();
+    }
+}
+
+function checkCardMatch() {
+    const [c1, c2] = cardFlippedUnits;
+    if (c1.dataset.icon === c2.dataset.icon) {
+        c1.classList.add('matched');
+        c2.classList.add('matched');
+        cardMatchedCount++;
+        cardFlippedUnits = [];
+        cardIsLocking = false;
+
+        if (cardMatchedCount === cardDiffConfig[cardDifficulty].pairs) {
+            alert(`全數配對成功！\n共花費了：${cardTotalMoves} 步！`);
+            // 存入最優成績：傳入步數作為排序依據
+            saveRecord("記憶對對碰", cardDiffConfig[cardDifficulty].label, cardTotalMoves, `${cardTotalMoves} 步`);
+            document.getElementById('card-start-btn').disabled = false;
+        }
+    } else {
+        setTimeout(() => {
+            c1.classList.remove('flipped'); c2.classList.remove('flipped');
+            c1.innerText = '？'; c2.innerText = '？';
+            cardFlippedUnits = []; cardIsLocking = false;
+        }, 850);
+    }
+}
+
+window.onload = () => {
+    initLedGrid(3);
+    initCardGrid();
+};
